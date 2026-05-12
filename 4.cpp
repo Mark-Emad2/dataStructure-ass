@@ -46,7 +46,9 @@ private:
             processes[x].isComplete = true;
             currentTime += processes[x].remaining_time;
             processes[x].completion_time = currentTime;
+            //total time waiting for completion
             processes[x].waiting_time = processes[x].completion_time - processes[x].arrival_time - processes[x].burst_time;
+            //total time from arrival to completion
             processes[x].turnaround_time = processes[x].waiting_time + processes[x].burst_time;
 
             if (processes[x].waiting_time < 0)
@@ -71,7 +73,7 @@ private:
 
     void output() {
         double avgWaitingTime = 0;
-
+        // i sort early so to get the right input formula i need to sort again
         sort(processes, processes + numProcesses, [](const Process &p1, const Process &p2) {
             return p1.id < p2.id;
         });
@@ -95,6 +97,7 @@ private:
         checkForArrival(currentTime, readyQueue);
 
         while (programsExecuted < numProcesses) {
+            //if in the input the first process wasn't zero jump to the next smallest one
             if (readyQueue.empty()) {
                 int nextArrival = INT_MAX;
                 for (int i = 0; i < numProcesses; i++) {
