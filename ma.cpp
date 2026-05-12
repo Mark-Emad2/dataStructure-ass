@@ -1,77 +1,94 @@
 #include <iostream>
 using namespace std;
-template <class T>
-int linear_search(T data[], int whole, T target) {
 
-    for (int i=0 ;i<whole;i++) {
-        if (data[i]==target) {
-            return i;
+
+
+
+template <class T>
+class Bitonic_Task {
+private:
+    int swaps;
+    int comparisons;
+
+    void bubble_sort(T data[], int n) {
+        for (int i = 0; i < n-1 ;i++){
+            for (int j= n-1;j>i;j--) {
+                comparisons++;
+                if (data[j]<data[j-1]) {
+                    swap(data[j],data[j-1]);
+                    swaps++;
+                }
+            }
         }
     }
-    return -1;
-}
 
+    void reversed_selcetionSort(T data[],int n,int whole) {
 
-template <class T>
-void bubble_sort(T data[], int n,int &swaps,int &comp) {
-    for (int i = 0; i < n-1 ;i++){
-        for (int j= n-1;j>i;j--) {
-            comp++;
-            if (data[j]<data[j-1]) {
-                swap(data[j],data[j-1]);
+        for (int i =n  ,j,least;i<whole-1;i++) {
+            for (j=i+1 , least =i ;j<whole;j++) {
+                comparisons++;
+                if (data[j]>data[least]) {
+                    least = j;
+                }
+            }
+            if (least!=i) {
+                swap(data[least],data[i]);
                 swaps++;
             }
         }
     }
-}
+    int linear_search(T data[], int whole, T target) {
 
-template <class T>
-void reversed_selcetionSort(T data[],int n,int whole,int &swaps,int &comp) {
-
-    for (int i =n  ,j,least;i<whole-1;i++) {
-        for (j=i+1 , least =i ;j<whole;j++) {
-            comp++;
-            if (data[j]>data[least]) {
-                least = j;
+        for (int i=0 ;i<whole;i++) {
+            if (data[i]==target) {
+                return i;
             }
         }
-        if (least!=i) {
-            swap(data[least],data[i]);
-            swaps++;
-        }
+        return -1;
     }
-}
 
+public:
+    Bitonic_Task() : swaps(0) , comparisons(0){}
 
+    int betonic(T data[],int n, T target) {
 
-template <class T>
-int betonic(T data[],int n,int &swaps,int &comp ,T target) {
-    int indexing = n/2; //3
-    bubble_sort(data, indexing , swaps,comp);
-    reversed_selcetionSort(data,indexing,n,swaps,comp);
-    int bitonic_value = linear_search(data,n,target);
+        swaps =0;
+        comparisons=0;
+        int indexing = n/2; //3
+        bubble_sort(data, indexing);
+        reversed_selcetionSort(data,indexing,n);
 
-    return  bitonic_value;
-}
+        int bitonic_value = linear_search(data,n,target);
+
+        return  bitonic_value;
+    }
+    int getSwaps() const {return swaps;}
+    int getComparisons() const {return comparisons;}
+
+    void printArray(T const data[], int n) {
+        cout << "(" ;
+        for (int i=0;i<n;i++) {
+            cout << data[i] << ",";
+        }
+        cout <<"\b)"<< endl;
+    }
+};
+
 
 template <class T>
 void test_case(string Test_name ,T arr[], int size, T target) {
-    int swaps=0,comp=0;
-    cout << "----"<< Test_name <<"----" <<endl;
-    cout << "Original Array : (" ;
-    for (int i=0;i<size;i++) {
-        cout << arr[i] << ",";
-    }
-    cout <<"\b)"<< endl;
-    int bit_value = betonic(arr,size,swaps,comp,target);
-    cout << "Bitonic Array  : (" ;
-    for (int i=0;i<size;i++) {
-        cout << arr[i] << ",";
-    }
-    cout <<"\b)"<< endl;
+    Bitonic_Task<T> out;
 
-    cout << "Total Number of swaps : " << swaps << endl;
-    cout << "Total Number of comparisons : " << comp << endl;
+    cout << "----"<< Test_name <<"----" <<endl;
+    cout << "Original Array : " ;
+    out.printArray(arr,size);
+    int bit_value = out.betonic(arr,size,target);
+    cout << "Bitonic Array  : " ;
+    out.printArray(arr,size);
+
+
+    cout << "Total Number of swaps : " << out.getSwaps() << endl;
+    cout << "Total Number of comparisons : " << out.getComparisons() << endl;
 
     if (bit_value==-1) {
         cout << "There is no such a value \n";
