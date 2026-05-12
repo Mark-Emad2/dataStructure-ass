@@ -94,7 +94,7 @@ int main() {
     binarySearchObject.printComparisons();
 
     cout << "Best Case Complexity: O(1)" << endl;
-    cout << "Worst Case Complexity: O(log n)" << endl;
+    cout << "Worst Case Complexity: O(n)" << endl;
 
     return 0;
 }
